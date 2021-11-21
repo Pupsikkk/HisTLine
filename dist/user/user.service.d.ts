@@ -8,4 +8,5 @@ export declare class UserService {
     addUser(newPotentialUser: CreateUserDto): Promise<User>;
     updateUser(updatingUser: CreateUserDto): Promise<void>;
     deleteUser(candidateForDeleting: CreateUserDto): Promise<void>;
+    getUserById(id: number): Promise<User>;
 }

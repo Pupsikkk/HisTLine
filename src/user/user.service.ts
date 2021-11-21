@@ -26,7 +26,11 @@ export class UserService {
       );
     const hashPassword = await bcrypt.hash(password, 5);
     // console.dir({ login, hashPassword });
-    return this.userRepository.create({ login: login, password: hashPassword });
+    return this.userRepository.create({
+      login: login,
+      password: hashPassword,
+      // hashedRefreshToken: null,
+    });
   }
 
   async updateUser(updatingUser: CreateUserDto) {
@@ -43,4 +47,8 @@ export class UserService {
   }
 
   async deleteUser(candidateForDeleting: CreateUserDto) {}
+
+  public async getUserById(id: number) {
+    return this.userRepository.findOne({ where: { id } });
+  }
 }

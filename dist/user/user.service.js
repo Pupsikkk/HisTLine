@@ -33,11 +33,17 @@ let UserService = class UserService {
         if (candidate)
             throw new common_1.HttpException('Користувач з таким логіном уже існує!', common_1.HttpStatus.BAD_REQUEST);
         const hashPassword = await bcrypt.hash(password, 5);
-        return this.userRepository.create({ login: login, password: hashPassword });
+        return this.userRepository.create({
+            login: login,
+            password: hashPassword,
+        });
     }
     async updateUser(updatingUser) {
     }
     async deleteUser(candidateForDeleting) { }
+    async getUserById(id) {
+        return this.userRepository.findOne({ where: { id } });
+    }
 };
 UserService = __decorate([
     (0, common_1.Injectable)(),

@@ -23,7 +23,7 @@ let UserController = class UserController {
         this.userService = userService;
     }
     getAll() {
-        return this.userService.getAllUsers();
+        return this.userService.getUserById(1);
     }
     getOne(id) {
         return this.userService.getUser(id);
