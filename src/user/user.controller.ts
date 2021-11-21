@@ -22,8 +22,7 @@ export class UserController {
   @ApiResponse({ status: HttpStatus.OK, type: [User] })
   @Get('')
   getAll() {
-    // return this.userService.getAllUsers();
-    return this.userService.getUserById(1);
+    return this.userService.getAllUsers();
   }
 
   @ApiOperation({ summary: 'Отримати одного користувача по його id' })

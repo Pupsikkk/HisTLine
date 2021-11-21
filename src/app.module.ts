@@ -19,6 +19,7 @@ import { AuthModule } from './auth/auth.module';
       port: +process.env.POSTGRES_PORT,
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASS,
+      database: process.env.POSTGRES_DB,
       models: [User, Role],
       autoLoadModels: true,
     }),

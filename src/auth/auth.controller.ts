@@ -51,9 +51,4 @@ export class AuthController {
   refresh(@Req() req: Request) {
     return req.headers;
   }
-
-  @Get('/test/:id')
-  testFunc(@Param('id') id: number) {
-    return this.authService.getCookieWithJwtAccessToken(id);
-  }
 }
