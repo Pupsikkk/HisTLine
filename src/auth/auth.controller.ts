@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -16,6 +17,8 @@ import {
 import { AuthDataDto } from './dto/auth-data.dto';
 import { Request } from 'express';
 import { AuthService } from './auth.service';
+import { Roles } from './roles-auth.decorator';
+import { RolesGuard } from './roles.guard';
 
 class JWTResponse {
   @ApiProperty({
@@ -33,16 +36,25 @@ export class AuthController {
 
   @ApiOperation({ summary: 'Логін користувача' })
   @ApiResponse({ status: HttpStatus.OK, type: JWTResponse })
+  // @Roles('user')
+  // @UseGuards(RolesGuard)
   @Post('/login')
-  login(@Body() authData: AuthDataDto) {
-    return authData;
+  async login(@Body() authData: AuthDataDto, @Req() req: Request) {
+    const { user, accessToken, refreshToken } = await this.authService.login(
+      authData,
+    );
+    req.res.setHeader('Set-Cookie', [accessToken, refreshToken]);
+    return user;
   }
 
   @ApiOperation({ summary: 'Реєстрація користувача' })
   @ApiResponse({ status: HttpStatus.OK, type: JWTResponse })
   @Post('/registration')
-  registration(@Body() authData: AuthDataDto) {
-    return authData;
+  async registration(@Req() req: Request, @Body() authData: AuthDataDto) {
+    const { user, accessToken, refreshToken } =
+      await this.authService.registration(authData);
+    req.res.setHeader('Set-Cookie', [accessToken, refreshToken]);
+    return user;
   }
 
   @ApiOperation({ summary: 'Видача нового рефреш токену' })

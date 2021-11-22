@@ -51,4 +51,8 @@ export class UserService {
   public async getUserById(id: number) {
     return this.userRepository.findOne({ where: { id } });
   }
+
+  public async getUserByLogin(login: string) {
+    return this.userRepository.findOne({ where: { login } });
+  }
 }
