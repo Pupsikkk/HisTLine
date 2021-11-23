@@ -1,5 +1,12 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UseGuards,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { Roles } from 'src/auth/roles-auth.decorator';
+import { RolesGuard } from 'src/auth/roles.guard';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { Role } from './role.model';
 

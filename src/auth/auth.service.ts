@@ -5,10 +5,11 @@ import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcryptjs';
 import { RoleService } from 'src/role/role.service';
 import { Role } from 'src/role/role.model';
+import { rolesEnum } from './../role/roles-enum';
 
-interface TokenPayload {
+export interface TokenPayload {
   userId: number;
-  role: string;
+  role: rolesEnum[];
 }
 
 @Injectable()
@@ -26,15 +27,17 @@ export class AuthService {
         'Такого користувача не існує',
         HttpStatus.BAD_REQUEST,
       );
+
     const passwordEquals = await bcrypt.compare(
       user.password,
       candidate.password,
     );
+
     if (!passwordEquals)
       throw new HttpException('Невірний пароль', HttpStatus.BAD_REQUEST);
     const payload = {
       userId: candidate.id,
-      role: (await this.roleService.getRoleByValue('user')).value,
+      role: [rolesEnum.USER],
     };
     const accessTokenCookie = this.getCookieWithJwtAccessToken(payload);
     const { cookie: refreshTokenCookie, refreshToken } =
@@ -56,14 +59,16 @@ export class AuthService {
         'Такий користувач уже існує',
         HttpStatus.BAD_REQUEST,
       );
+
     const hashedPassword = await bcrypt.hash(user.password, 5);
+
     const userFromDB = await this.userService.addUser({
       login: user.login,
       password: hashedPassword,
     });
     const payload = {
       userId: userFromDB.id,
-      role: (await this.roleService.getRoleByValue('user')).value,
+      role: [rolesEnum.USER],
     };
     const accessTokenCookie = this.getCookieWithJwtAccessToken(payload);
     const { cookie: refreshTokenCookie, refreshToken } =
@@ -118,5 +123,14 @@ export class AuthService {
       secret: secret,
       expiresIn: expiresIn,
     });
+  }
+
+  public async verifyUser(token, secret) {
+    try {
+      const user = await this.jwtService.verify(token, { secret: secret });
+      return user;
+    } catch (err) {
+      return null;
+    }
   }
 }

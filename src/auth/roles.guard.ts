@@ -31,11 +31,14 @@ export class RolesGuard implements CanActivate {
       });
 
       req.user = user;
-      return true;
+      const isPassed = user.role.some((role) => requiredRoles.includes(role));
+
+      if (!isPassed)
+        throw new HttpException('Нет доступа', HttpStatus.FORBIDDEN);
+      return isPassed;
     } catch (e) {
-      console.log(e);
       if (e.message === 'jwt expired') {
-        throw new HttpException('Необхідно отримати новий рефреш токен', 420);
+        throw new HttpException('Необхідно отримати новий access token', 420);
       }
       throw new HttpException('Нет доступа', HttpStatus.FORBIDDEN);
     }
