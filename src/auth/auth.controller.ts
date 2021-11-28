@@ -83,12 +83,14 @@ export class AuthController {
     if (!refreshTokensEquals)
       throw new HttpException('Невірний рефреш токен', HttpStatus.FORBIDDEN);
     const { exp, iat, ...payload } = info;
+    const accessTokenCookie =
+      this.authService.getCookieWithJwtAccessToken(payload);
     const { cookie: refreshTokenCookie, refreshToken: newRefreshToken } =
       this.authService.getCookieWithJwtRefreshToken(payload);
 
     this.authService.setCurrentRefreshToken(info.userId, newRefreshToken);
 
-    req.res.setHeader('Set-Cookie', [refreshTokenCookie]);
+    req.res.setHeader('Set-Cookie', [accessTokenCookie, refreshTokenCookie]);
 
     return;
   }

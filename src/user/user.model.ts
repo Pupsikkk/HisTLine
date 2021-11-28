@@ -1,7 +1,17 @@
-import { APP_INTERCEPTOR } from '@nestjs/core';
-import { Table, Model, Column, DataType } from 'sequelize-typescript';
+import {
+  Table,
+  Model,
+  Column,
+  DataType,
+  HasMany,
+  HasOne,
+  BelongsTo,
+} from 'sequelize-typescript';
 import { ApiProperty } from '@nestjs/swagger';
-import { col } from 'sequelize/types';
+import { Instance } from 'src/instance/instance.model';
+import { Type } from 'src/type/type.model';
+import { Subtype } from 'src/subtype/subtype.model';
+import { Save } from 'src/save/save.model';
 
 interface createUserInterface {
   login: string;
@@ -35,4 +45,16 @@ export class User extends Model<User, createUserInterface> {
   })
   @Column({ type: DataType.STRING, allowNull: true, defaultValue: null })
   hashedRefreshToken: string;
+
+  @HasMany(() => Instance)
+  instance: Instance[];
+
+  @HasMany(() => Type)
+  type: Type[];
+
+  @HasMany(() => Subtype)
+  subtype: Subtype[];
+
+  // @HasOne(() => Save)
+  // save: Save;
 }
