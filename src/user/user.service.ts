@@ -3,6 +3,8 @@ import { InjectModel } from '@nestjs/sequelize';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.model';
 import * as bcrypt from 'bcryptjs';
+import { Role } from 'src/role/role.model';
+import { rolesEnum } from 'src/role/roles-enum';
 
 @Injectable()
 export class UserService {
@@ -29,6 +31,9 @@ export class UserService {
     return this.userRepository.create({
       login: login,
       password: password,
+      roleId: (
+        (await Role.findOne({ where: { value: rolesEnum.USER } })) as any
+      )?.dataValues?.id,
     });
   }
 
@@ -54,3 +59,37 @@ export class UserService {
     return this.userRepository.findOne({ where: { login } });
   }
 }
+
+export const checkCoreAdmin = async () => {
+  const checkAdminRole: any = await Role.findOne({
+    where: { value: rolesEnum.ADMIN },
+  });
+  const checkUserRole: any = await Role.findOne({
+    where: { value: rolesEnum.USER },
+  });
+
+  if (!checkAdminRole)
+    await Role.create({
+      value: rolesEnum.ADMIN,
+      description: 'coreAdmin of whole app',
+    });
+
+  if (!checkUserRole)
+    await Role.create({
+      value: rolesEnum.USER,
+      description: 'coreAdmin of whole app',
+    });
+
+  const checkAdmin = await User.findOne({
+    where: { roleId: checkAdminRole.dataValues.id },
+  });
+
+  if (!checkAdmin)
+    await User.create({
+      login: process.env.ADMIN_LOGIN,
+      password: process.env.ADMIN_PASSWORD,
+      roleId: checkAdminRole.dataValues.id as number,
+    });
+
+  console.log('Admin checked!');
+};

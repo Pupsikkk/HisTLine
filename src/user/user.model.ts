@@ -6,16 +6,19 @@ import {
   HasMany,
   HasOne,
   BelongsTo,
+  ForeignKey,
 } from 'sequelize-typescript';
 import { ApiProperty } from '@nestjs/swagger';
 import { Instance } from 'src/instance/instance.model';
 import { Type } from 'src/type/type.model';
 import { Subtype } from 'src/subtype/subtype.model';
 import { Save } from 'src/save/save.model';
+import { Role } from 'src/role/role.model';
 
 interface createUserInterface {
   login: string;
   password: string;
+  roleId: number;
   hashedRefreshToken?: string;
 }
 
@@ -46,6 +49,10 @@ export class User extends Model<User, createUserInterface> {
   @Column({ type: DataType.STRING, allowNull: true, defaultValue: null })
   hashedRefreshToken: string;
 
+  @ForeignKey(() => Role)
+  @Column({ type: DataType.INTEGER, allowNull: false })
+  roleId: number;
+
   @HasMany(() => Instance)
   instance: Instance[];
 
@@ -55,6 +62,9 @@ export class User extends Model<User, createUserInterface> {
   @HasMany(() => Subtype)
   subtype: Subtype[];
 
-  // @HasOne(() => Save)
-  // save: Save;
+  @HasOne(() => Save)
+  mySave: Save;
+
+  @BelongsTo(() => Role)
+  role: Role;
 }

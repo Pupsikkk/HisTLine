@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { swagger } from 'swagger-ui-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
+import { checkCoreAdmin } from './user/user.service';
 
 async function start() {
   const PORT = process.env.PORT || 3000;
@@ -18,7 +19,10 @@ async function start() {
   SwaggerModule.setup('api/docs', app, document);
 
   app.use(cookieParser());
-  app.listen(PORT, () => console.log(`Server starts on ${PORT}!!!`));
+  app.listen(PORT, () => {
+    console.log(`Server starts on ${PORT}!!!`);
+    checkCoreAdmin();
+  });
 }
 
 start();

@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { join } from 'path';
 import { UserModule } from './user/user.module';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule } from '@nestjs/config';
@@ -18,11 +19,15 @@ import { Subtype } from './subtype/subtype.model';
 import { InstanceSubtype } from './instance/instanceSubtype.model';
 import { InstanceDescription } from './instance-descriptions/instance-descriptions.model';
 import { Save } from './save/save.model';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: `.env`,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '..', 'client'),
     }),
     SequelizeModule.forRoot({
       dialect: 'postgres',

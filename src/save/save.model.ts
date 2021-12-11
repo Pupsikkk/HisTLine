@@ -1,4 +1,5 @@
 import {
+  BelongsTo,
   Column,
   DataType,
   ForeignKey,
@@ -40,4 +41,7 @@ export class Save extends Model<Save> {
 
   @Column({ type: DataType.STRING })
   subtype_raw: string;
+
+  @BelongsTo(() => User)
+  user: User;
 }
