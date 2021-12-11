@@ -61,21 +61,21 @@ export class UserService {
 }
 
 export const checkCoreAdmin = async () => {
-  const checkAdminRole: any = await Role.findOne({
+  let checkAdminRole: any = await Role.findOne({
     where: { value: rolesEnum.ADMIN },
   });
-  const checkUserRole: any = await Role.findOne({
+  let checkUserRole: any = await Role.findOne({
     where: { value: rolesEnum.USER },
   });
 
   if (!checkAdminRole)
-    await Role.create({
+    checkAdminRole = await Role.create({
       value: rolesEnum.ADMIN,
       description: 'coreAdmin of whole app',
     });
 
   if (!checkUserRole)
-    await Role.create({
+    checkUserRole = await Role.create({
       value: rolesEnum.USER,
       description: 'coreAdmin of whole app',
     });
@@ -87,7 +87,7 @@ export const checkCoreAdmin = async () => {
   if (!checkAdmin)
     await User.create({
       login: process.env.ADMIN_LOGIN,
-      password: process.env.ADMIN_PASSWORD,
+      password: await bcrypt.hash(process.env.ADMIN_PASSWORD, 5),
       roleId: checkAdminRole.dataValues.id as number,
     });
 

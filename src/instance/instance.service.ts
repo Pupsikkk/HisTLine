@@ -16,12 +16,10 @@ export class InstanceService {
     const userID = user.userId;
     const possibleUsersID = [userID];
 
-    console.log(instance);
-
     if (!(user.role === rolesEnum.ADMIN)) {
       const admin = (await User.findOne({
         where: {
-          login: 'admin',
+          login: process.env.ADMIN_LOGIN,
         },
       })) as any;
       possibleUsersID.push(admin.dataValues.id);
@@ -94,88 +92,3 @@ export class InstanceService {
     return instance_table;
   }
 }
-
-// async createInstance(req, res, next) {
-//     try {
-
-//       const userID = userInfo.id;
-//       const possibleUsersID = [userID];
-//       if (!userInfo.isAdmin) {
-//         possibleUsersID.push(
-//           (
-//             await User.findOne({
-//               where: {
-//                 login: 'admin',
-//               },
-//             })
-//           ).dataValues.id
-//         );
-//       }
-//       const [type, created] = await Type.findOrCreate({
-//         where: {
-//           type_name: instance.type.type_name,
-//           userId: possibleUsersID,
-//         },
-//         defaults: {
-//           userId: userID,
-//           type_color: instance.type.color,
-//         },
-//       });
-
-//       const typeID = type.dataValues.id;
-
-//       if (
-//         await Instance.findOne({
-//           where: {
-//             name: instance.name,
-//             userId: userID,
-//           },
-//         })
-//       ) {
-//         return next(ApiError.dbError('Такая колонка уже существует!'));
-//       }
-
-//       let instance_table = await Instance.create({
-//         name: instance.name,
-//         fromYear: instance.fromYear,
-//         toYear: instance.toYear,
-//         img: 'no image',
-//         userId: userID,
-//         typeId: typeID,
-//       });
-
-//       await InstanceDescription.create({
-//         instanceId: instance_table.id,
-//         description_text: instance.info.description,
-//         link_raw: (function (links) {
-//           return links.join(' ');
-//         })(instance.info.links),
-//       });
-
-//       for (let subtypeObj of instance.subtypes) {
-//         const [subtype, created] = await Subtype.findOrCreate({
-//           where: {
-//             subtype_name: subtypeObj.subtype_name,
-//             userId: possibleUsersID,
-//             typeId: typeID,
-//           },
-//           defaults: {
-//             userId: userID,
-//             subtype_color: subtypeObj.color,
-//           },
-//         });
-
-//         const subtypeID = subtype.dataValues.id;
-
-//         await InstanceSubtype.create({
-//           subtypeId: subtypeID,
-//           instanceId: instance_table.id,
-//         });
-//       }
-
-//       res.json(instance_table);
-//     } catch (err) {
-//       console.log(err);
-//       return next(ApiError.internal(err.message));
-//     }
-//   }

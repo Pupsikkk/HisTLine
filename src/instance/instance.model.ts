@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
   BelongsTo,
   Column,
@@ -25,6 +26,7 @@ interface createInstanceInterface {
 
 @Table({ tableName: 'instances' })
 export class Instance extends Model<Instance, createInstanceInterface> {
+  @ApiProperty({ example: 1, description: 'Ідентифікатор' })
   @Column({
     type: DataType.INTEGER,
     unique: true,
@@ -33,31 +35,47 @@ export class Instance extends Model<Instance, createInstanceInterface> {
   })
   id: number;
 
+  @ApiProperty({ example: 'Нікола Тесла', description: 'Назва колонки' })
   @Column({
     type: DataType.STRING,
   })
   name: string;
 
+  @ApiProperty({ example: 1856, description: 'З якого року' })
   @Column({
     type: DataType.INTEGER,
   })
   fromYear: number;
 
+  @ApiProperty({ example: 1943, description: 'По такий рік' })
   @Column({
     type: DataType.INTEGER,
   })
   toYear: number;
 
+  @ApiProperty({
+    example:
+      'https://lh3.googleusercontent.com/proxy/u_kU7ZJHxLSHxLP2GCB-QUD25ICBCDD7GjOdnkFj3FifCyVtIUC6ZjoLrQFm_paSvwAfG-H9U-VcCyF8x3SJQdR-bgrKutg',
+    description: 'URL зображення',
+  })
   @Column({
     type: DataType.STRING,
     allowNull: true,
   })
   img: string;
 
+  @ApiProperty({
+    example: 1,
+    description: 'Ідентифікатор батьківського користувача',
+  })
   @ForeignKey(() => User)
   @Column
   userId: number;
 
+  @ApiProperty({
+    example: 1,
+    description: 'Ідентифікатор типу',
+  })
   @ForeignKey(() => Type)
   @Column
   typeId: number;
