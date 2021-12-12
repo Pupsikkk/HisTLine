@@ -9,12 +9,17 @@ import { Subtype } from 'src/subtype/subtype.model';
 import { User } from 'src/user/user.model';
 import { InstanceSubtype } from './instanceSubtype.model';
 import { JwtModule } from '@nestjs/jwt';
+import { TypeModule } from 'src/type/type.module';
+import { UserModule } from 'src/user/user.module';
+import { InstanceDescriptionsModule } from 'src/instance-descriptions/instance-descriptions.module';
+import { SubtypeModule } from 'src/subtype/subtype.module';
 
 @Module({
   providers: [InstanceService],
   controllers: [InstanceController],
   imports: [
     SequelizeModule.forFeature([
+      Instance,
       InstanceDescription,
       Type,
       Subtype,
@@ -22,6 +27,10 @@ import { JwtModule } from '@nestjs/jwt';
       InstanceSubtype,
     ]),
     JwtModule.register({}),
+    TypeModule,
+    UserModule,
+    InstanceDescriptionsModule,
+    SubtypeModule,
   ],
 })
 export class InstanceModule {}

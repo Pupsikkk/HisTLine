@@ -7,6 +7,7 @@ import { Subtype } from 'src/subtype/subtype.model';
 import { Instance } from 'src/instance/instance.model';
 import { JwtModule } from '@nestjs/jwt';
 import { Type } from './type.model';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
   providers: [TypeService],
@@ -14,6 +15,8 @@ import { Type } from './type.model';
   imports: [
     SequelizeModule.forFeature([Instance, Subtype, User, Type]),
     JwtModule.register({}),
+    UserModule,
   ],
+  exports: [TypeService],
 })
 export class TypeModule {}

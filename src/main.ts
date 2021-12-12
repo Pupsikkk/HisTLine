@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import { swagger } from 'swagger-ui-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
-import { checkCoreAdmin } from './user/user.service';
+import { checkCoreAdmin } from './helpers/checkCoreAdmin';
 
 async function start() {
   const PORT = process.env.PORT || 3000;

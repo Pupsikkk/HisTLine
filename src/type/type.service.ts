@@ -19,4 +19,26 @@ export class TypeService {
     });
     return createdType;
   }
+
+  async getTypeForUsers(type_name: string, possibleUsersID: number[]) {
+    const findedTypes = (await this.typeRepository.findAll({
+      where: {
+        type_name,
+        userId: possibleUsersID,
+      },
+    })) as any;
+
+    return findedTypes[0]?.dataValues;
+  }
+
+  async getAllTypesForUsers(possibleUserId: number[]) {
+    let findedtypes = (await this.typeRepository.findAll({
+      where: {
+        userId: possibleUserId,
+      },
+    })) as any;
+
+    findedtypes = findedtypes.map((type) => type.dataValues);
+    return findedtypes;
+  }
 }

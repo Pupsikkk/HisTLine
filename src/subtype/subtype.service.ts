@@ -21,4 +21,43 @@ export class SubtypeService {
     });
     return createdSubtype;
   }
+
+  async getSubtypeForUsers(
+    subtype_name: string,
+    typeId: number,
+    userId: number,
+  ) {
+    const findedTypes = (await this.subtypeRepository.findAll({
+      where: {
+        subtype_name,
+        userId,
+        typeId,
+      },
+    })) as any;
+
+    return findedTypes[0]?.dataValues;
+  }
+
+  async getSubtypesForUsers(subtypesArr: string[], possibleUserId: number[]) {
+    let findedSubtypes = (await this.subtypeRepository.findAll({
+      where: {
+        subtype_name: subtypesArr,
+        userId: possibleUserId,
+      },
+    })) as any;
+
+    findedSubtypes = findedSubtypes.map((subtype) => subtype.dataValues);
+    return findedSubtypes;
+  }
+
+  async getAllSubtypesForUsers(possibleUserId: number[]) {
+    let findedSubtypes = (await this.subtypeRepository.findAll({
+      where: {
+        userId: possibleUserId,
+      },
+    })) as any;
+
+    findedSubtypes = findedSubtypes.map((subtype) => subtype.dataValues);
+    return findedSubtypes;
+  }
 }

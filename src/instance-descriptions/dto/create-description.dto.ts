@@ -13,7 +13,7 @@ export class createDescriptionDto {
     ],
     description: 'Посилання на зовнішній ресурс',
   })
-  links?: [string];
+  links?: string[];
 
   @ApiProperty({
     example: 1,

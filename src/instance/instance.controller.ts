@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpStatus,
   Post,
   Req,
@@ -19,6 +20,7 @@ import { RolesGuard } from 'src/auth/roles.guard';
 import { someErr, UnauthorizedErr } from 'src/helpers/preparedTypes';
 import { rolesEnum } from 'src/role/roles-enum';
 import { createInstanceDto } from './dto/create-instance.dto';
+import { filterDto } from './dto/filter.dto';
 import { Instance } from './instance.model';
 import { InstanceService } from './instance.service';
 
@@ -35,7 +37,25 @@ export class InstanceController {
   @UseGuards(AuthGuard, RolesGuard)
   @Post('')
   createInstance(@Req() req: any, @Body() instance: createInstanceDto) {
-    const user = req.user;
-    return this.instanceService.createInstance(user, instance);
+    return this.instanceService.createInstance(req.user, instance);
+  }
+
+  @ApiOperation({ summary: 'Отримати фільтровані дані. Ролі: user, admin' })
+  @ApiResponse({ status: HttpStatus.OK, type: [Instance] })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, type: someErr })
+  @ApiResponse({ status: 420, type: UnauthorizedErr })
+  @Roles(rolesEnum.USER, rolesEnum.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Post('/filter')
+  getFilteredInstance(@Req() req: any, @Body() filter: filterDto) {
+    return this.instanceService.getFilteredInstances(req.user, filter);
+  }
+
+  @ApiOperation({ summary: 'Отримати дані.' })
+  @ApiResponse({ status: HttpStatus.OK, type: [Instance] })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, type: someErr })
+  @Get('')
+  getInstances(@Req() req: any, @Body() filter: filterDto) {
+    return this.instanceService.getInstances();
   }
 }

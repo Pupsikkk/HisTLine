@@ -13,5 +13,6 @@ import { JwtModule } from '@nestjs/jwt';
     SequelizeModule.forFeature([Instance, InstanceDescription]),
     JwtModule.register({}),
   ],
+  exports: [InstanceDescService],
 })
 export class InstanceDescriptionsModule {}

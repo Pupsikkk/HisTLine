@@ -8,6 +8,8 @@ import { Instance } from 'src/instance/instance.model';
 import { User } from 'src/user/user.model';
 import { Subtype } from './subtype.model';
 import { JwtModule } from '@nestjs/jwt';
+import { UserService } from 'src/user/user.service';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
   providers: [SubtypeService],
@@ -21,6 +23,8 @@ import { JwtModule } from '@nestjs/jwt';
       Subtype,
     ]),
     JwtModule.register({}),
+    UserModule,
   ],
+  exports: [SubtypeService],
 })
 export class SubtypeModule {}
