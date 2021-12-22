@@ -126,40 +126,17 @@ export class InstanceService {
         await this.instanceRepository.findAll({
           where: {
             [Op.and]: [
-              {
-                id: findedInstanceId,
+              {id: findedInstanceId},
+              {[Op.or]: [
+                  {fromYear: {[Op.between]: [reqFromYear, reqToYear]}},
+                  {toYear: {[Op.between]: [reqFromYear, reqToYear]}},
+                  {[Op.and]: [
+                    {fromYear: {[Op.lte]: reqFromYear}}, 
+                    { toYear: {[Op.gte]: reqToYear}}
+                  ]}
+                ]
               },
-              {
-                [Op.or]: [
-                  {
-                    fromYear: {
-                      [Op.between]: [reqFromYear, reqToYear],
-                    },
-                  },
-                  {
-                    toYear: {
-                      [Op.between]: [reqFromYear, reqToYear],
-                    },
-                  },
-                  {
-                    [Op.and]: [
-                      {
-                        fromYear: {
-                          [Op.lte]: reqFromYear,
-                        },
-                      },
-                      {
-                        toYear: {
-                          [Op.gte]: reqToYear,
-                        },
-                      },
-                    ],
-                  },
-                ],
-              },
-              {
-                userId: possibleUsersID,
-              },
+              {userId: possibleUsersID},
             ],
           },
         })
