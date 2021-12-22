@@ -37,7 +37,7 @@ export class AuthService {
       throw new HttpException('Невірний пароль', HttpStatus.BAD_REQUEST);
     const payload = {
       userId: candidate.id,
-      role: [rolesEnum.USER],
+      role: [this.roleService.rolesEnum.USER],
     };
     const accessTokenCookie = this.getCookieWithJwtAccessToken(payload);
     const { cookie: refreshTokenCookie, refreshToken } =
@@ -68,7 +68,7 @@ export class AuthService {
     });
     const payload = {
       userId: userFromDB.id,
-      role: [rolesEnum.USER],
+      role: [this.roleService.rolesEnum.USER],
     };
     const accessTokenCookie = this.getCookieWithJwtAccessToken(payload);
     const { cookie: refreshTokenCookie, refreshToken } =
@@ -83,7 +83,7 @@ export class AuthService {
     };
   }
 
-  public getCookieWithJwtAccessToken(payload) {
+  public getCookieWithJwtAccessToken(payload: TokenPayload) {
     const token = this.generateToken(
       { ...payload },
       process.env.JWT_ACCESS_TOKEN_SECRET,
@@ -119,10 +119,15 @@ export class AuthService {
   }
 
   private generateToken(payload: TokenPayload, secret, expiresIn) {
-    return this.jwtService.sign(payload, {
-      secret: secret,
-      expiresIn: expiresIn,
-    });
+    try {
+      return this.jwtService.sign(payload, {
+        secret: secret,
+        expiresIn: expiresIn,
+      });
+    } catch (err) {
+      console.log(err);
+      return null;
+    }
   }
 
   public async verifyUser(token, secret) {
@@ -130,6 +135,7 @@ export class AuthService {
       const user = await this.jwtService.verify(token, { secret: secret });
       return user;
     } catch (err) {
+      console.log(err);
       return null;
     }
   }

@@ -7,9 +7,12 @@ import {
 import { InjectModel } from '@nestjs/sequelize';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { Role } from './role.model';
+import { rolesEnum } from './roles-enum';
 
 @Injectable()
 export class RoleService {
+  public readonly rolesEnum = rolesEnum;
+
   constructor(@InjectModel(Role) private roleRepository: typeof Role) {}
 
   async createRole(newRole: CreateRoleDto) {
